@@ -1,4 +1,4 @@
-package fileStorage;
+package com.example.awsimageupload.fileStorage;
 
 
 import com.amazonaws.AmazonServiceException;

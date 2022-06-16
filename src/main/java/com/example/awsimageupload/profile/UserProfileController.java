@@ -26,6 +26,11 @@ public class UserProfileController {
         return userProfileService.getUserProfiles();
     }
 
+    @GetMapping(path = "/{userProfileId}")
+    public UserProfile getUserProfileById(@PathVariable("userProfileId") UUID userProfileId) {
+        return userProfileService.getUserProfileById(userProfileId);
+    }
+
     @PostMapping(
             path = "{userProfileId}/image/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,

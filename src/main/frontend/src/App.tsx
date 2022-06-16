@@ -3,14 +3,10 @@ import logo from './logo.svg'
 import './App.css'
 import axios from 'axios'
 import { FileDropzone } from './Components/dropzone/dropzone.component'
+import { UserProfileModel } from './models/user-profile'
+import { UserProfile } from './Components/user-profile/user-profile.component'
 
 
-
-type UserProfileType = {
-  userProfileId : string,
-  username : string,
-  userProfileImageLink : string
-}
 
 function App() {
 
@@ -31,14 +27,9 @@ function App() {
 
 
   return (
-    <div className="App">
-      <FileDropzone />
-      {
-        userProfiles.map((profile : UserProfileType) => (
-          <>
-            <h1>{profile.username}</h1>
-            <h2>{profile.userProfileId}</h2>
-          </>
+    <div className="App">      {
+        userProfiles.map((profile : UserProfileModel) => (
+          <UserProfile key={profile.userProfileId} profile={profile} />
         ))
       }
     </div>

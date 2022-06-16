@@ -1,15 +1,17 @@
-import React, {useMemo} from 'react';
+import axios from 'axios';
+import React, {useCallback, useMemo} from 'react';
 import {useDropzone} from 'react-dropzone';
+import { UserProfileModel } from '../../models/user-profile';
 
 import './dropzone.styles.css'
 
 
- type StyleType = {
-
+ type DropzonePropsType = {
+    userProfileId : string
 }
 
+
 const baseStyle = {
-  // width : '450px',
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
@@ -38,16 +40,36 @@ const rejectStyle = {
   borderColor: '#ff1744'
 };
 
-export const FileDropzone = () => {
+export const FileDropzone = (props : DropzonePropsType) => {
+
+  const onDrop = useCallback((acceptedFiles : any) => {
+    const {userProfileId} = props
+    const file = acceptedFiles[0];
+    const formData = new FormData();
+    formData.append("file", file)
+
+    axios.post(
+      `http://localhost:8081/api/v1/user-profile/${userProfileId}/image/upload`,
+      formData,
+      {
+        headers : {
+          "Content-Type": "multipart/form-data"
+        }
+      }
+    ).then(() => console.log("file uploaded successfully")
+    ).catch(err => console.log(err))
+  }, [])
+
+
   const {
     getRootProps,
     getInputProps,
     isFocused,
     isDragAccept,
     isDragReject
-  } = useDropzone({accept: {'image/*': []}});
+  } = useDropzone({accept: {'image/*': []} , onDrop});
 
-  const style : StyleType = useMemo(() => ({
+  const style : any = useMemo(() => ({
     ...baseStyle,
     ...(isFocused ? focusedStyle : {}),
     ...(isDragAccept ? acceptStyle : {}),
@@ -62,7 +84,8 @@ export const FileDropzone = () => {
     <div className="container">
       <div {...getRootProps({style})}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        <p>Drag 'n' drop profile image here, or click to select files</p>
+        
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public class UserProfileController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public void uploadUserProfileImage(@PathVariable("userProfileId") UUID userProfileId,
-                                       @RequestParam("file") MultipartFile file) {
+                                       @RequestParam("file") MultipartFile file) throws IOException {
         userProfileService.uploadUserProfileImage(userProfileId, file);
     }
 }

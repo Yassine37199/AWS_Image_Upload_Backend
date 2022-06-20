@@ -40,15 +40,30 @@ public class UserProfileService {
         if(file.isEmpty()){
             throw new IllegalStateException("cannot upload empty file [ " + file.getSize() + "]");
         }
-        if(!Arrays.asList(ContentType.IMAGE_JPEG, ContentType.IMAGE_PNG, ContentType.IMAGE_GIF).contains(file.getContentType())){
+        if(!Arrays.asList(ContentType.IMAGE_JPEG.getMimeType(), ContentType.IMAGE_PNG.getMimeType(), ContentType.IMAGE_GIF.getMimeType()).contains(file.getContentType())){
             throw new IllegalStateException("file must be an image");
         }
-        if (userProfileDataAccessService.getUserProfileById(userProfileId) == null){
+
+        UserProfile user = userProfileDataAccessService.getUserProfileById(userProfileId);
+
+        if (user == null){
             throw new IllegalStateException("user profile with the id of " +  userProfileId + " doesn't exist");
         }
 
         Map<String, String> metadata = new HashMap<>();
-        file.getContentType()
+        metadata.put("Content-Type" , file.getContentType());
+        metadata.put("Content-Length" , String.valueOf(file.getSize()));
+
+        String path = String.format("%s/%s" , BucketName.PROFILE_IMAGE.getBucketName() , user.getUserProfileId());
+        String filename = String.format("%s-%s" , file.getOriginalFilename(), UUID.randomUUID());
+
+        try {
+            fileStorage.save(path, filename , Optional.of(metadata) , file.getInputStream());
+        }
+        catch(IOException e) {
+            throw new IllegalStateException(e);
+        }
+
 
 
 
